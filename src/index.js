@@ -42,6 +42,8 @@ const typeDefs = gql`
         getCourses: [Course]!
         getCoursesByCode(courseCode: String!): [Course]!
         getCoursesByDivisionCodes(divisionCodes: [String!]): [Course]!
+        getLinks: [Link]
+        getTutorials: [Tutorial]
     }
     
     type Mutation {
@@ -78,6 +80,17 @@ const typeDefs = gql`
         credits: Float!
         creditTypeCode: String!
     }
+    
+    type Link {
+        id: String
+        uri: String
+        title: String
+    } 
+    
+    type Tutorial {
+        id: String
+        title: String
+    } 
     
     type AuthUser {
         user: User!
@@ -168,6 +181,16 @@ const resolvers = {
         getCoursesByDivisionCodes: async (_, {divisionCodes}, {db}) => {
             const courses = await db.collection('Courses').find({ divisionCode: { $in: divisionCodes } }).toArray();
             return courses;
+        },
+
+        getLinks: async (_, __, {db}) => {
+            const links = await db.collection('Links').find().toArray();
+            return links;
+        },
+
+        getTutorials: async (_, __, {db}) => {
+            const tutorials = await db.collection('Tutorials').find().toArray();
+            return tutorials;
         },
     },
     Mutation: {
